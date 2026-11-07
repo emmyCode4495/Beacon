@@ -1,0 +1,62 @@
+# ===== Dependencies =====
+node_modules/
+.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# ===== Next.js / Build =====
+.next/
+out/
+build/
+dist/
+*.tsbuildinfo
+next-env.d.ts
+
+# ===== Testing / Coverage =====
+coverage/
+.nyc_output/
+
+# ===== Environment & Secrets =====
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env*.local
+*.pem
+*.key
+secrets/
+
+# ===== Debug / Logs =====
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+*.log
+logs/
+
+# ===== IDE & OS =====
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# ===== Misc =====
+*.bak
+*.tmp
+.turbo/
+.vercel/
+
+# Optional: keep if you add a local backend later
+# data/
+# *.db
+# *.sqlite
+# *.sqlite3
