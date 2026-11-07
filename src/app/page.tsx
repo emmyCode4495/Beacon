@@ -290,7 +290,7 @@ export default function LandingPage() {
       {/* Footer */}
       <footer className="border-t border-line-strong">
         <div className="mx-auto flex max-w-6xl flex-col gap-4 px-5 py-8 text-sm text-ink-soft sm:px-8 md:flex-row md:items-center md:justify-between">
-          <Wordmark className="text-ink [&>span:last-child]:text-base" />
+          <Wordmark className="h-8" />
           <p>Demo build for investor conversations</p>
           <p>Your password never leaves the host environment.</p>
         </div>

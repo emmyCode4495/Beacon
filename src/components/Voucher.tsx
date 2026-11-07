@@ -33,8 +33,10 @@ export function Voucher({
     <div className={cn("voucher", className)}>
       <div className="px-5 pb-6 pt-5 sm:px-6">
         <div className="flex items-center justify-between gap-4">
-          <span className="inline-flex items-center gap-2">
-            <BeaconMark className="h-6 w-6" />
+          <span className="inline-flex items-center gap-2.5">
+            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-white">
+              <BeaconMark className="h-[1.2rem]" />
+            </span>
             <span className="wide text-base font-extrabold tracking-tight">
               Beacon pass
             </span>

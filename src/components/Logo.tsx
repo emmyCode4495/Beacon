@@ -2,35 +2,38 @@ import Image from "next/image";
 import { cn } from "@/lib/utils";
 
 /**
- * The Beacon symbol: a dish above a house, ringed by a swoosh of signal.
- * The artwork is lit on black, so it sits in a rounded tile that works as an
- * app icon on any background. Size it with className (e.g. "h-10 w-10").
+ * Logo files live in /public and are trimmed to the artwork, so the height
+ * class alone sets the size and the width follows the aspect ratio:
+ *   logo-lockup.png  symbol + "Beacon" wordmark
+ *   logo-mark.png    symbol only (dish, house and swoosh)
+ *   logo-full.png    lockup with the tagline, for places with room
+ * The artwork is navy and blue on a transparent background, so use it on light
+ * surfaces. On a dark or blue surface, put the symbol on a white chip.
  */
+
+/** Symbol only. Size with a height class, e.g. "h-8". */
 export function BeaconMark({ className }: { className?: string }) {
   return (
-    <span
-      className={cn(
-        "relative inline-block h-8 w-8 shrink-0 overflow-hidden rounded-[9px] bg-black",
-        className,
-      )}
-    >
-      <Image
-        src="/logo-mark.png"
-        alt=""
-        fill
-        sizes="64px"
-        className="origin-center scale-[1.3] object-cover"
-        priority
-      />
-    </span>
+    <Image
+      src="/logo-mark.png"
+      alt=""
+      width={640}
+      height={565}
+      className={cn("h-8 w-auto shrink-0", className)}
+    />
   );
 }
 
+/** Symbol and wordmark. Size with a height class, e.g. "h-11". */
 export function Wordmark({ className }: { className?: string }) {
   return (
-    <span className={cn("inline-flex items-center gap-2.5", className)}>
-      <BeaconMark />
-      <span className="wide text-xl font-extrabold tracking-tight">Beacon</span>
-    </span>
+    <Image
+      src="/logo-lockup.png"
+      alt="Beacon"
+      width={900}
+      height={282}
+      priority
+      className={cn("h-11 w-auto shrink-0", className)}
+    />
   );
 }

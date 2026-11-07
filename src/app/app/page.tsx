@@ -90,7 +90,7 @@ export default function AppPage() {
       {/* AUTH */}
       {screen === "auth" && (
         <div className="flex flex-1 flex-col justify-center px-6 py-12">
-          <Wordmark className="mb-12" />
+          <Wordmark className="mb-12 h-12 self-start" />
           <h1 className="wide text-3xl font-extrabold leading-tight tracking-tight">
             Sign in to buy a pass
           </h1>
@@ -145,7 +145,7 @@ export default function AppPage() {
       {screen === "home" && (
         <>
           <header className="flex items-center justify-between px-5 pb-4 pt-6">
-            <Wordmark />
+            <Wordmark className="h-9" />
             <button
               onClick={() => setScreen("profile")}
               aria-label="Account"
