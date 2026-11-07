@@ -1,13 +1,32 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import type { FormEvent, ReactNode } from "react";
 import Link from "next/link";
-import { Radio, User, ChevronLeft, Check, Loader2 } from "lucide-react";
+import { User, ChevronLeft, Check, Loader2 } from "lucide-react";
+import { Wordmark } from "@/components/Logo";
+import { Voucher } from "@/components/Voucher";
+import { Tilt } from "@/components/Tilt";
 import { PLANS } from "@/lib/plans";
 import { generateCode, formatCountdown, formatNaira } from "@/lib/utils";
 import type { Plan, Session } from "@/lib/types";
 
 type Screen = "auth" | "home" | "checkout" | "success" | "connect" | "profile";
+
+function BackHeader({ title, onBack }: { title: string; onBack: () => void }) {
+  return (
+    <header className="flex items-center gap-3 px-5 pb-2 pt-6">
+      <button
+        onClick={onBack}
+        aria-label="Back"
+        className="flex h-10 w-10 items-center justify-center rounded-lg border-[1.5px] border-line-strong bg-sheet hover:border-ink"
+      >
+        <ChevronLeft className="h-5 w-5" />
+      </button>
+      <h1 className="wide text-lg font-extrabold">{title}</h1>
+    </header>
+  );
+}
 
 export default function AppPage() {
   const [screen, setScreen] = useState<Screen>("auth");
@@ -60,56 +79,64 @@ export default function AppPage() {
       ? Math.min(100, (remaining / (session.totalSeconds * 1000)) * 100)
       : 0;
 
+  const onSignIn = (e: FormEvent) => {
+    e.preventDefault();
+    setScreen("home");
+  };
+
   return (
-    <div className="min-h-dvh flex flex-col max-w-lg mx-auto relative">
+    <div className="mx-auto flex min-h-dvh max-w-lg flex-col sm:border-x sm:border-line">
+      <div key={screen} className="screen-in flex flex-1 flex-col">
       {/* AUTH */}
       {screen === "auth" && (
-        <div className="flex-1 flex flex-col justify-center px-6 py-12">
-          <div className="text-center mb-10">
-            <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-sky-400 to-indigo-500 shadow-lg shadow-sky-500/30 mb-5">
-              <Radio className="w-6 h-6 text-white" strokeWidth={2.2} />
-            </div>
-            <h1 className="text-2xl font-bold tracking-tight">Welcome to Beacon</h1>
-            <p className="text-ink-400 mt-2 text-sm">
-              Sign in to get temporary access to unlimited internet
-            </p>
-          </div>
+        <div className="flex flex-1 flex-col justify-center px-6 py-12">
+          <Wordmark className="mb-12" />
+          <h1 className="wide text-3xl font-extrabold leading-tight tracking-tight">
+            Sign in to buy a pass
+          </h1>
+          <p className="mt-3 text-ink-soft">
+            You&rsquo;ll get a code that works on this phone only.
+          </p>
 
-          <div className="glass-strong rounded-2xl p-6 space-y-4">
+          <form onSubmit={onSignIn} className="mt-8 space-y-5">
             <div>
-              <label className="text-xs font-medium text-ink-400 mb-1.5 block">
+              <label htmlFor="id" className="mb-1.5 block text-sm font-semibold">
                 Phone or email
               </label>
               <input
+                id="id"
+                name="id"
                 type="text"
-                placeholder="you@example.com or +234..."
-                className="w-full bg-ink-900/60 border border-white/10 rounded-xl px-4 py-3 text-sm placeholder:text-ink-600 focus:border-sky-500/50 focus:outline-none transition"
+                autoComplete="username"
+                placeholder="you@example.com or +234…"
+                className="field"
                 defaultValue="demo@beacon.app"
               />
             </div>
             <div>
-              <label className="text-xs font-medium text-ink-400 mb-1.5 block">
+              <label htmlFor="pw" className="mb-1.5 block text-sm font-semibold">
                 Password
               </label>
               <input
+                id="pw"
+                name="pw"
                 type="password"
-                placeholder="••••••••"
-                className="w-full bg-ink-900/60 border border-white/10 rounded-xl px-4 py-3 text-sm placeholder:text-ink-600 focus:border-sky-500/50 focus:outline-none transition"
+                autoComplete="current-password"
+                placeholder="Your password"
+                className="field"
                 defaultValue="demo1234"
               />
             </div>
-            <button
-              onClick={() => setScreen("home")}
-              className="btn-primary w-full py-3.5 rounded-xl text-sm font-semibold text-white mt-2"
-            >
+            <button type="submit" className="btn btn-primary w-full !py-3.5">
               Continue
             </button>
-            <p className="text-center text-xs text-ink-500 pt-1">
-              Demo: any credentials work
+            <p className="text-center text-sm text-ink-soft">
+              This is a demo, so any details will work.
             </p>
-          </div>
-          <p className="text-center text-xs text-ink-600 mt-8">
-            By continuing you agree that access is temporary and device-bound.
+          </form>
+          <p className="mt-10 text-center text-xs leading-relaxed text-ink-soft">
+            By continuing you agree that access is temporary and tied to one
+            device.
           </p>
         </div>
       )}
@@ -117,164 +144,159 @@ export default function AppPage() {
       {/* HOME */}
       {screen === "home" && (
         <>
-          <header className="px-5 pt-6 pb-4 flex items-center justify-between">
-            <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-sky-400 to-indigo-500 flex items-center justify-center">
-                <Radio className="w-3.5 h-3.5 text-white" strokeWidth={2.5} />
-              </div>
-              <span className="font-semibold">Beacon</span>
-            </div>
+          <header className="flex items-center justify-between px-5 pb-4 pt-6">
+            <Wordmark />
             <button
               onClick={() => setScreen("profile")}
-              className="w-9 h-9 rounded-full glass flex items-center justify-center text-ink-300"
+              aria-label="Account"
+              className="flex h-10 w-10 items-center justify-center rounded-lg border-[1.5px] border-line-strong bg-sheet hover:border-ink"
             >
-              <User className="w-4 h-4" />
+              <User className="h-[18px] w-[18px]" />
             </button>
           </header>
 
-          <main className="flex-1 px-5 pb-28 overflow-y-auto">
+          <main className="flex-1 overflow-y-auto px-5 pb-32 pt-2">
             {session && session.status === "active" ? (
-              <div className="glass-strong rounded-2xl p-5 mb-6">
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                    <span className="text-xs font-semibold text-emerald-400 uppercase tracking-wider">
-                      Live
-                    </span>
-                  </div>
-                  <span className="text-xs text-ink-500">
-                    {session.planLabel} plan
-                  </span>
-                </div>
-                <div className="flex items-end justify-between">
-                  <div>
-                    <p className="text-4xl font-bold tracking-tight tabular-nums">
-                      {formatCountdown(remaining)}
-                    </p>
-                    <p className="text-sm text-ink-400 mt-1">remaining</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-xs text-ink-500 mb-1">Your code</p>
-                    <p className="font-mono text-lg text-sky-300 tracking-widest">
-                      {session.code}
-                    </p>
-                  </div>
-                </div>
-                <div className="mt-5 h-1.5 rounded-full bg-ink-800 overflow-hidden">
-                  <div
-                    className="h-full rounded-full bg-gradient-to-r from-sky-500 to-indigo-500 transition-all duration-1000"
-                    style={{ width: `${progressPct}%` }}
+              <>
+                <h1 className="wide mb-5 text-2xl font-extrabold">
+                  Your pass is running
+                </h1>
+                <Tilt>
+                  <Voucher
+                    code={session.code}
+                    plan={session.planLabel}
+                    timeLeft={formatCountdown(remaining)}
+                    progress={progressPct}
                   />
-                </div>
+                </Tilt>
                 <button
                   onClick={() => setScreen("connect")}
-                  className="mt-5 w-full py-3 rounded-xl bg-white/8 hover:bg-white/12 text-sm font-medium transition"
+                  className="btn btn-outline mt-6 w-full"
                 >
-                  How to connect →
+                  How to connect
                 </button>
-              </div>
+              </>
             ) : (
               <>
-                <h2 className="text-xl font-bold tracking-tight mb-1">Get online</h2>
-                <p className="text-sm text-ink-400 mb-5">
-                  Choose how long you need unlimited internet
+                <h1 className="wide text-2xl font-extrabold">Get online</h1>
+                <p className="mb-6 mt-2 text-ink-soft">
+                  Pick how long you need unlimited internet.
                 </p>
-                <div className="space-y-3">
-                  {PLANS.map((plan) => (
-                    <button
-                      key={plan.id}
-                      onClick={() => setSelected(plan)}
-                      className={`w-full text-left glass rounded-2xl p-4 flex items-center justify-between transition-all ${
-                        selected.id === plan.id
-                          ? "border-sky-500/50 bg-gradient-to-r from-sky-500/10 to-transparent"
-                          : "hover:border-white/20"
-                      }`}
-                    >
-                      <div className="flex items-center gap-2">
-                        <div>
-                          <p className="font-semibold">{plan.label}</p>
-                          <p className="text-xs text-ink-500 mt-0.5">
+                <div role="radiogroup" aria-label="Pass length" className="space-y-3">
+                  {PLANS.map((plan) => {
+                    const on = selected.id === plan.id;
+                    return (
+                      <button
+                        key={plan.id}
+                        role="radio"
+                        aria-checked={on}
+                        onClick={() => setSelected(plan)}
+                        className={`flex w-full items-center gap-4 rounded-xl border-2 px-4 py-4 text-left transition-colors ${
+                          on
+                            ? "border-ultra bg-sheet"
+                            : "border-line bg-transparent hover:border-line-strong"
+                        }`}
+                      >
+                        <span
+                          className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 ${
+                            on ? "border-ultra" : "border-line-strong"
+                          }`}
+                          aria-hidden
+                        >
+                          {on && <span className="pop h-2.5 w-2.5 rounded-full bg-ultra" />}
+                        </span>
+                        <span className="flex-1">
+                          <span className="block font-bold">{plan.label}</span>
+                          <span className="mt-0.5 flex items-center gap-2 text-sm text-ink-soft">
                             {plan.description}
-                          </p>
-                        </div>
-                        {plan.popular && (
-                          <span className="text-[10px] font-bold uppercase bg-sky-500/20 text-sky-300 px-2 py-0.5 rounded-full">
-                            Best
+                            {plan.popular && (
+                              <span className="rounded bg-signal px-1.5 py-0.5 text-xs font-bold text-ink">
+                                Most chosen
+                              </span>
+                            )}
                           </span>
-                        )}
-                      </div>
-                      <p className="text-lg font-bold">{formatNaira(plan.price)}</p>
-                    </button>
-                  ))}
+                        </span>
+                        <span className="wide text-lg font-extrabold tabular-nums">
+                          {formatNaira(plan.price)}
+                        </span>
+                      </button>
+                    );
+                  })}
                 </div>
               </>
             )}
           </main>
-
-          {!session && (
-            <div className="fixed bottom-0 left-0 right-0 p-5 bg-gradient-to-t from-ink-950 via-ink-950/95 to-transparent pt-10 max-w-lg mx-auto">
-              <button
-                onClick={startCheckout}
-                className="btn-primary w-full py-4 rounded-2xl text-sm font-semibold text-white"
-              >
-                Continue with {selected.label} · {formatNaira(selected.price)}
-              </button>
-            </div>
-          )}
         </>
       )}
 
       {/* CHECKOUT */}
       {screen === "checkout" && (
-        <div className="flex-1 flex flex-col items-center justify-center px-6 text-center">
-          <Loader2 className="w-12 h-12 text-sky-400 animate-spin mb-6" />
-          <h2 className="text-xl font-bold">
-            {checkoutPhase === 0
-              ? "Processing payment…"
-              : "Generating device-bound code…"}
-          </h2>
-          <p className="text-sm text-ink-400 mt-2 max-w-xs">
-            {checkoutPhase === 0
-              ? "Securing your device-bound access code"
-              : "Binding to this browser fingerprint"}
+        <div className="flex flex-1 flex-col justify-center px-6">
+          <h1 className="wide text-2xl font-extrabold leading-tight">
+            {checkoutPhase === 0 ? "Confirming your payment" : "Issuing your code"}
+          </h1>
+          <p className="mt-2 text-ink-soft">
+            Keep this screen open. It takes a few seconds.
           </p>
+          <ul className="mt-8 space-y-4" aria-live="polite">
+            {[
+              { label: "Payment confirmed", done: checkoutPhase >= 1, active: checkoutPhase === 0 },
+              { label: "Code issued", done: false, active: checkoutPhase === 1 },
+              { label: "Locked to this phone", done: false, active: false },
+            ].map((s) => (
+              <li key={s.label} className="flex items-center gap-3">
+                <span
+                  className={`flex h-7 w-7 items-center justify-center rounded-full border-2 ${
+                    s.done ? "border-ok bg-ok text-white" : "border-line-strong"
+                  }`}
+                >
+                  {s.done ? (
+                    <Check className="pop h-4 w-4" strokeWidth={3} />
+                  ) : s.active ? (
+                    <Loader2 className="h-4 w-4 animate-spin text-ultra" />
+                  ) : null}
+                </span>
+                <span className={s.done || s.active ? "font-semibold" : "text-ink-soft"}>
+                  {s.label}
+                </span>
+              </li>
+            ))}
+          </ul>
         </div>
       )}
 
       {/* SUCCESS */}
       {screen === "success" && session && (
-        <div className="flex-1 flex flex-col items-center justify-center px-6 text-center max-w-md mx-auto">
-          <div className="w-20 h-20 rounded-full bg-emerald-500/15 flex items-center justify-center mb-6">
-            <Check className="w-9 h-9 text-emerald-400" strokeWidth={2.5} />
-          </div>
-          <h2 className="text-2xl font-bold tracking-tight">You’re connected</h2>
-          <p className="text-ink-400 mt-2 text-sm">
-            Your access code is ready and locked to this device
+        <div className="flex flex-1 flex-col justify-center px-6 py-10">
+          <h1 className="wide text-3xl font-extrabold leading-tight tracking-tight">
+            Your pass is ready
+          </h1>
+          <p className="mb-8 mt-3 text-ink-soft">
+            The code works on this phone only and expires on its own.
           </p>
 
-          <div className="glass-strong rounded-2xl p-6 w-full mt-8">
-            <p className="text-xs text-ink-500 uppercase tracking-wider mb-2">
-              Connection code
-            </p>
-            <p className="text-3xl font-mono font-bold text-sky-300 tracking-[0.25em]">
-              {session.code}
-            </p>
-            <p className="text-xs text-ink-500 mt-3">
-              Valid for {session.planLabel} · Expires automatically
-            </p>
+          <div className="pass-flip">
+            <Tilt>
+              <Voucher
+                code={session.code}
+                plan={session.planLabel}
+                timeLeft={formatCountdown(remaining || session.totalSeconds * 1000)}
+                progress={progressPct || 100}
+              />
+            </Tilt>
           </div>
 
           <button
-            onClick={() => setScreen("home")}
-            className="btn-primary w-full py-3.5 rounded-xl text-sm font-semibold text-white mt-8"
+            onClick={() => setScreen("connect")}
+            className="btn btn-primary mt-8 w-full !py-3.5"
           >
-            Go to dashboard
+            Connect to the Wi-Fi
           </button>
           <button
-            onClick={() => setScreen("connect")}
-            className="mt-3 text-sm text-ink-400 hover:text-white transition"
+            onClick={() => setScreen("home")}
+            className="btn mt-2 w-full text-ink-soft hover:text-ink"
           >
-            Show connection steps
+            Go to dashboard
           </button>
         </div>
       )}
@@ -282,64 +304,61 @@ export default function AppPage() {
       {/* CONNECT */}
       {screen === "connect" && (
         <>
-          <header className="px-5 pt-6 pb-2 flex items-center gap-3">
-            <button
-              onClick={() => setScreen("home")}
-              className="w-9 h-9 rounded-full glass flex items-center justify-center"
-            >
-              <ChevronLeft className="w-5 h-5" />
-            </button>
-            <h1 className="font-semibold">How to connect</h1>
-          </header>
-          <main className="flex-1 px-5 py-6 space-y-4 overflow-y-auto">
-            {[
-              {
-                n: "1",
-                title: "Open Wi-Fi settings",
-                body: (
-                  <>
-                    On your phone, go to Settings → Wi-Fi and look for the network
-                    named{" "}
-                    <span className="text-sky-300 font-medium">Beacon-Guest</span>{" "}
-                    (or the name your host set).
-                  </>
-                ),
-              },
-              {
-                n: "2",
-                title: "Enter your code",
-                body: (
-                  <>
-                    When the captive portal appears, enter the code below. It only
-                    works on this device.
-                    <p className="mt-3 font-mono text-xl text-sky-300 tracking-widest">
-                      {session?.code ?? "—"}
-                    </p>
-                  </>
-                ),
-              },
-              {
-                n: "3",
-                title: "You’re online",
-                body: "Access lasts until the timer ends. No need to re-enter the code if you stay connected. When time is up you are automatically disconnected.",
-              },
-            ].map((step) => (
-              <div key={step.n} className="glass rounded-2xl p-5">
-                <div className="flex gap-4">
-                  <div className="w-8 h-8 rounded-full bg-sky-500/20 flex items-center justify-center flex-shrink-0 text-sky-400 font-bold text-sm">
-                    {step.n}
+          <BackHeader title="How to connect" onBack={() => setScreen("home")} />
+          <main className="flex-1 overflow-y-auto px-5 py-6">
+            <ol className="relative space-y-8">
+              {(
+                [
+                  {
+                    title: "Open Wi-Fi settings",
+                    body: (
+                      <>
+                        On your phone, open Settings, then Wi-Fi, and choose the
+                        network called{" "}
+                        <strong className="font-bold text-ink">Beacon-Guest</strong>{" "}
+                        (or the name your host set).
+                      </>
+                    ),
+                  },
+                  {
+                    title: "Enter your code",
+                    body: (
+                      <>
+                        When the sign-in page opens, type the code below. It only
+                        works on this phone.
+                        <span className="mt-3 block rounded-lg bg-ultra px-4 py-3 text-center font-mono text-2xl font-semibold tracking-[0.12em] text-white">
+                          {session?.code ?? "No active pass"}
+                        </span>
+                      </>
+                    ),
+                  },
+                  {
+                    title: "You’re online",
+                    body: "You stay connected until the timer ends, with no need to enter the code again. When time is up you are disconnected automatically.",
+                  },
+                ] as { title: string; body: ReactNode }[]
+              ).map((step, i, all) => (
+                <li key={step.title} className="relative flex gap-4">
+                  {i < all.length - 1 && (
+                    <span
+                      className="absolute left-[15px] top-9 -bottom-8 border-l-2 border-dashed border-line-strong"
+                      aria-hidden
+                    />
+                  )}
+                  <span className="relative z-10 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-ink font-mono text-sm font-semibold text-paper">
+                    {i + 1}
+                  </span>
+                  <div className="pt-0.5">
+                    <h2 className="font-bold">{step.title}</h2>
+                    <div className="mt-1 leading-relaxed text-ink-soft">{step.body}</div>
                   </div>
-                  <div>
-                    <p className="font-medium">{step.title}</p>
-                    <p className="text-sm text-ink-400 mt-1">{step.body}</p>
-                  </div>
-                </div>
-              </div>
-            ))}
-            <div className="glass-strong rounded-2xl p-4 text-center text-xs text-ink-500">
-              Real Starlink password is never shared. Access is temporary and
-              device-bound.
-            </div>
+                </li>
+              ))}
+            </ol>
+            <p className="mt-10 border-t-2 border-dashed border-line-strong pt-5 text-sm text-ink-soft">
+              The host&rsquo;s real Wi-Fi password is never shared. Your access is
+              temporary and tied to this device.
+            </p>
           </main>
         </>
       )}
@@ -347,47 +366,53 @@ export default function AppPage() {
       {/* PROFILE */}
       {screen === "profile" && (
         <>
-          <header className="px-5 pt-6 pb-2 flex items-center gap-3">
-            <button
-              onClick={() => setScreen("home")}
-              className="w-9 h-9 rounded-full glass flex items-center justify-center"
-            >
-              <ChevronLeft className="w-5 h-5" />
-            </button>
-            <h1 className="font-semibold">Account</h1>
-          </header>
+          <BackHeader title="Account" onBack={() => setScreen("home")} />
           <main className="flex-1 px-5 py-6">
-            <div className="glass rounded-2xl p-5 mb-4">
-              <p className="text-sm text-ink-400">Signed in as</p>
-              <p className="font-medium mt-0.5">demo@beacon.app</p>
+            <div className="rounded-xl border border-line bg-sheet p-5">
+              <p className="text-sm text-ink-soft">Signed in as</p>
+              <p className="mt-0.5 font-semibold">demo@beacon.app</p>
             </div>
-            <div className="glass rounded-2xl divide-y divide-white/5 overflow-hidden">
-              <button className="w-full text-left px-5 py-4 text-sm hover:bg-white/5 transition flex justify-between">
-                <span>Past sessions</span>
-                <span className="text-ink-500">→</span>
-              </button>
-              <button className="w-full text-left px-5 py-4 text-sm hover:bg-white/5 transition flex justify-between">
-                <span>Payment methods</span>
-                <span className="text-ink-500">→</span>
-              </button>
-              <button
-                onClick={() => {
-                  setSession(null);
-                  setScreen("auth");
-                }}
-                className="w-full text-left px-5 py-4 text-sm text-rose-400 hover:bg-white/5 transition"
-              >
-                Sign out
-              </button>
-            </div>
-            <p className="text-center text-xs text-ink-600 mt-10">
-              Beacon demo · Investor preview ·{" "}
-              <Link href="/" className="text-sky-400 hover:underline">
-                Marketing site
+            <ul className="mt-4 divide-y divide-line overflow-hidden rounded-xl border border-line bg-sheet">
+              <li>
+                <button className="flex w-full justify-between px-5 py-4 text-left font-medium hover:bg-paper">
+                  Past passes
+                </button>
+              </li>
+              <li>
+                <button className="flex w-full justify-between px-5 py-4 text-left font-medium hover:bg-paper">
+                  Payment methods
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => {
+                    setSession(null);
+                    setScreen("auth");
+                  }}
+                  className="w-full px-5 py-4 text-left font-semibold text-signal-deep hover:bg-paper"
+                >
+                  Sign out
+                </button>
+              </li>
+            </ul>
+            <p className="mt-10 text-center text-xs text-ink-soft">
+              Beacon demo for investors.{" "}
+              <Link href="/" className="font-semibold text-ultra underline underline-offset-4">
+                Back to the website
               </Link>
             </p>
           </main>
         </>
+      )}
+      </div>
+
+      {/* Sits outside the animated screen so it stays pinned to the window */}
+      {screen === "home" && !session && (
+        <div className="fixed inset-x-0 bottom-0 mx-auto max-w-lg border-t border-line bg-paper px-5 pb-5 pt-4">
+          <button onClick={startCheckout} className="btn btn-primary w-full !py-4">
+            Pay {formatNaira(selected.price)} for {selected.label}
+          </button>
+        </div>
       )}
     </div>
   );

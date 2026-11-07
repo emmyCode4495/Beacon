@@ -1,21 +1,31 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import type { Metadata, Viewport } from "next";
+import { Archivo, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+// Archivo's width axis gives us wide, signage-style headlines from one family.
+const archivo = Archivo({
+  variable: "--font-archivo",
   subsets: ["latin"],
+  axes: ["wdth"],
+  display: "swap",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+// Used only for codes, countdowns and the gateway log.
+const plexMono = IBM_Plex_Mono({
+  variable: "--font-plex-mono",
   subsets: ["latin"],
+  weight: ["400", "500", "600"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "Beacon — Share unlimited internet on your terms",
+  title: "Beacon: sell the spare hours of your Starlink",
   description:
-    "Temporary, device-bound Wi-Fi access powered by Starlink. Neighbors pay for the time they need. You stay in control.",
+    "Neighbours buy hours of Wi-Fi from your Starlink with a code locked to one device. Access ends on time and your real password stays private.",
+};
+
+export const viewport: Viewport = {
+  themeColor: "#EDF0F4",
 };
 
 export default function RootLayout({
@@ -24,12 +34,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-ink-950 text-ink-50`}
-      >
-        <div className="ambient" aria-hidden />
-        <div className="relative z-10">{children}</div>
+    <html lang="en-NG">
+      <body className={`${archivo.variable} ${plexMono.variable} antialiased`}>
+        {children}
       </body>
     </html>
   );

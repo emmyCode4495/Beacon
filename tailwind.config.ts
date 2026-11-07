@@ -1,5 +1,13 @@
 import type { Config } from "tailwindcss";
 
+/**
+ * Beacon palette
+ * paper   cool off-white page, like uncoated voucher stock
+ * sheet   lighter surface for fields and chips
+ * ink     deep indigo-black for text
+ * ultra   ultramarine, the ballpoint / cheque blue; the brand colour
+ * signal  safety orange, the beacon light; used sparingly
+ */
 export default {
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
@@ -9,26 +17,17 @@ export default {
   theme: {
     extend: {
       colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
-        brand: {
-          400: "#38bdf8",
-          500: "#0ea5e9",
-          600: "#0284c7",
-        },
-        ink: {
-          50: "#f8fafc",
-          100: "#f1f5f9",
-          200: "#e2e8f0",
-          300: "#cbd5e1",
-          400: "#94a3b8",
-          500: "#64748b",
-          600: "#475569",
-          700: "#334155",
-          800: "#1e293b",
-          900: "#0f172a",
-          950: "#020617",
-        },
+        paper: "#EDF0F4",
+        sheet: "#F9FAFC",
+        ink: { DEFAULT: "#0E1233", soft: "#454B6B" },
+        line: { DEFAULT: "#CDD2DE", strong: "#9AA2B8" },
+        ultra: { DEFAULT: "#2236D3", deep: "#18269B" },
+        signal: { DEFAULT: "#FF5A1F", deep: "#B53A08" },
+        ok: "#0E7A52",
+      },
+      fontFamily: {
+        sans: ["var(--font-archivo)", "system-ui", "sans-serif"],
+        mono: ["var(--font-plex-mono)", "ui-monospace", "monospace"],
       },
     },
   },

@@ -1,95 +1,182 @@
 import Link from "next/link";
-import { Radio } from "lucide-react";
+import type { ReactNode } from "react";
+import { Wordmark } from "@/components/Logo";
+
+const SECTIONS = [
+  { id: "problem", title: "Problem and opportunity" },
+  { id: "architecture", title: "Architecture" },
+  { id: "guarantees", title: "Core guarantees" },
+  { id: "data", title: "Data model" },
+  { id: "binding", title: "Device binding flow" },
+  { id: "economics", title: "Unit economics" },
+  { id: "roadmap", title: "Roadmap" },
+];
+
+const ROADMAP = [
+  {
+    when: "Now",
+    what: "Next.js demo and architecture (this package).",
+  },
+  {
+    when: "Next",
+    what: "Real sign-in, payments (Paystack, Flutterwave), a session API and a basic admin for hosts.",
+  },
+  {
+    when: "Then",
+    what: "An OpenWRT / UniFi reference gateway image with a captive portal.",
+  },
+  {
+    when: "Later",
+    what: "Host dashboard, payouts, multiple SSIDs, analytics and a mobile PWA.",
+  },
+];
+
+const ECONOMICS = [
+  ["Average spend per neighbour, per month", "₦8,000 – ₦15,000"],
+  ["Gross monthly sales per host (8 neighbours)", "₦64k – ₦120k"],
+  ["Platform take rate (target)", "12 – 18%"],
+];
+
+function Code({ children }: { children: ReactNode }) {
+  return (
+    <code className="rounded border border-line bg-sheet px-1.5 py-0.5 font-mono text-[0.88em] text-ink">
+      {children}
+    </code>
+  );
+}
+
+function Section({
+  id,
+  n,
+  title,
+  children,
+}: {
+  id: string;
+  n: number;
+  title: string;
+  children: ReactNode;
+}) {
+  return (
+    <section id={id} className="scroll-mt-8 border-t-[3px] border-ink pt-6">
+      <h2 className="wide text-2xl font-extrabold leading-tight tracking-tight">
+        <span className="mr-3 font-mono text-base font-medium text-ink-soft">{n}</span>
+        {title}
+      </h2>
+      <div className="mt-5 space-y-4 text-[1.0625rem] leading-7 text-ink-soft [&_strong]:font-bold [&_strong]:text-ink">
+        {children}
+      </div>
+    </section>
+  );
+}
+
+function Panel({ children, label }: { children: ReactNode; label: string }) {
+  return (
+    <figure className="rounded-xl bg-ink p-5 text-paper">
+      <figcaption className="mb-3 font-mono text-xs text-paper/70">{label}</figcaption>
+      <div className="overflow-x-auto font-mono text-sm leading-relaxed">{children}</div>
+    </figure>
+  );
+}
 
 export default function DocsPage() {
   return (
     <div className="min-h-dvh">
-      <div className="max-w-3xl mx-auto px-6 py-12">
-        <Link
-          href="/"
-          className="inline-flex items-center gap-2 text-sm text-ink-400 hover:text-white mb-10 transition"
-        >
-          ← Back to Beacon
+      <header className="mx-auto flex max-w-6xl items-center justify-between px-5 py-5 sm:px-8">
+        <Link href="/" aria-label="Beacon home">
+          <Wordmark />
         </Link>
+        <Link href="/app" className="btn btn-outline !px-4 !py-2 text-sm">
+          Open app
+        </Link>
+      </header>
 
-        <div className="mb-10">
-          <p className="text-sky-400 text-sm font-semibold tracking-widest uppercase mb-2">
-            Investor brief
-          </p>
-          <h1 className="text-3xl md:text-4xl font-bold tracking-tight">
-            Beacon Architecture
+      <div className="mx-auto grid max-w-6xl gap-12 px-5 pb-24 pt-10 sm:px-8 lg:grid-cols-[13rem_1fr] lg:gap-16 lg:pt-16">
+        {/* Contents */}
+        <aside className="hidden lg:block">
+          <nav aria-label="Contents" className="sticky top-8">
+            <p className="mb-3 text-sm font-bold">Investor brief</p>
+            <ol className="space-y-2 border-l-2 border-dashed border-line-strong pl-4 text-sm">
+              {SECTIONS.map((s, i) => (
+                <li key={s.id}>
+                  <a href={`#${s.id}`} className="text-ink-soft hover:text-ink hover:underline underline-offset-4">
+                    <span className="mr-2 font-mono text-xs">{i + 1}</span>
+                    {s.title}
+                  </a>
+                </li>
+              ))}
+            </ol>
+          </nav>
+        </aside>
+
+        <article className="max-w-3xl">
+          <h1 className="wide text-[clamp(2.2rem,5vw,3.6rem)] font-extrabold leading-[1.03] tracking-tight">
+            How Beacon works, end to end
           </h1>
-          <p className="mt-3 text-ink-400 text-lg">
+          <p className="mt-5 max-w-xl text-lg leading-relaxed text-ink-soft">
             How temporary, device-bound Wi-Fi access works without ever exposing
-            the host’s real password.
+            the host&rsquo;s real password.
           </p>
-        </div>
 
-        <div className="prose prose-invert max-w-none space-y-10 text-ink-400">
-          <section>
-            <h2 className="text-2xl font-bold text-white mb-3">1. Problem & Opportunity</h2>
-            <p className="leading-relaxed">
-              Starlink (and other unlimited fixed connections) deliver excellent
-              bandwidth but are single-household by design. Neighbors routinely
-              ask to “borrow” the network. Giving out the real password creates
-              permanent access, security risk, and no monetization.
-            </p>
-            <p className="leading-relaxed mt-3">
-              <strong className="text-ink-200">
-                Beacon turns every host into a micro-ISP.
-              </strong>{" "}
-              Neighbors pay for the exact window they need. Access is
-              automatically revoked. The host’s real credentials never leave a
-              secure environment.
-            </p>
-          </section>
+          <div className="mt-14 space-y-14">
+            <Section id="problem" n={1} title="Problem and opportunity">
+              <p>
+                Starlink and other unlimited fixed connections deliver excellent
+                bandwidth but are single-household by design. Neighbours
+                routinely ask to &ldquo;borrow&rdquo; the network. Giving out
+                the real password creates permanent access, a security risk and
+                no income.
+              </p>
+              <p>
+                <strong>Beacon turns every host into a micro-ISP.</strong>{" "}
+                Neighbours pay for the exact window they need, access is revoked
+                automatically, and the host&rsquo;s real credentials never leave
+                a secure environment.
+              </p>
+            </Section>
 
-          <section>
-            <h2 className="text-2xl font-bold text-white mb-3">2. High-level Architecture</h2>
-            <div className="glass rounded-2xl p-6 font-mono text-sm text-ink-300 space-y-2">
-              <div>Starlink Dish → Host Gateway (OpenWRT / UniFi / Pi)</div>
-              <div className="pl-4 text-ink-500">└─ Captive Portal / Voucher engine</div>
-              <div className="pl-8 text-ink-500">└─ Talks to Beacon API (auth + session check)</div>
-              <div className="mt-3">Beacon Backend (API + DB + Jobs)</div>
-              <div className="pl-4 text-ink-500">├─ Payments (Paystack / Flutterwave / Stripe)</div>
-              <div className="pl-4 text-ink-500">├─ Session + Device binding</div>
-              <div className="pl-4 text-ink-500">└─ Expiry worker (revokes at T+0)</div>
-              <div className="mt-3">Beacon Web App (Next.js)</div>
-              <div className="pl-4 text-ink-500">└─ Plan selection → Payment → Code → Status</div>
-            </div>
-          </section>
+            <Section id="architecture" n={2} title="Architecture">
+              <Panel label="From the dish to the app">
+                <div>Starlink dish → Host gateway (OpenWRT / UniFi / Pi)</div>
+                <div className="pl-4 text-paper/70">└─ Captive portal and voucher engine</div>
+                <div className="pl-8 text-paper/70">└─ Talks to Beacon API (auth and session check)</div>
+                <div className="mt-3">Beacon backend (API, database, jobs)</div>
+                <div className="pl-4 text-paper/70">├─ Payments (Paystack / Flutterwave / Stripe)</div>
+                <div className="pl-4 text-paper/70">├─ Sessions and device binding</div>
+                <div className="pl-4 text-paper/70">└─ Expiry worker (revokes at T+0)</div>
+                <div className="mt-3">Beacon web app (Next.js)</div>
+                <div className="pl-4 text-paper/70">└─ Plan, payment, code, status</div>
+              </Panel>
+            </Section>
 
-          <section>
-            <h2 className="text-2xl font-bold text-white mb-3">3. Core Guarantees</h2>
-            <ul className="list-disc pl-5 space-y-2">
-              <li>
-                <strong className="text-ink-200">Password isolation</strong> — Real
-                Starlink / router password lives only in the host’s .env or secrets
-                manager. The app and users never see it.
-              </li>
-              <li>
-                <strong className="text-ink-200">Device binding</strong> — Every paid
-                session is tied to a device fingerprint. The same code fails on a
-                different device.
-              </li>
-              <li>
-                <strong className="text-ink-200">Hard expiry</strong> — A background
-                job and the gateway itself enforce the end time.
-              </li>
-              <li>
-                <strong className="text-ink-200">Single-use semantics</strong> — Codes
-                are short-lived and scoped. Re-use attempts are rejected.
-              </li>
-            </ul>
-          </section>
+            <Section id="guarantees" n={3} title="Core guarantees">
+              <ul className="space-y-4">
+                <li>
+                  <strong>Password isolation.</strong> The real Starlink or
+                  router password lives only in the host&rsquo;s <Code>.env</Code>{" "}
+                  or secrets manager. The app and its users never see it.
+                </li>
+                <li>
+                  <strong>Device binding.</strong> Every paid session is tied to
+                  a device fingerprint. The same code fails on a different
+                  device.
+                </li>
+                <li>
+                  <strong>Hard expiry.</strong> A background job and the gateway
+                  itself both enforce the end time.
+                </li>
+                <li>
+                  <strong>Single-use codes.</strong> Codes are short-lived and
+                  scoped. Re-use attempts are rejected.
+                </li>
+              </ul>
+            </Section>
 
-          <section>
-            <h2 className="text-2xl font-bold text-white mb-3">4. Data Model (simplified)</h2>
-            <pre className="glass rounded-xl p-5 text-xs overflow-x-auto text-ink-300 leading-relaxed">
-{`Host
+            <Section id="data" n={4} title="Data model">
+              <Panel label="Simplified">
+                <pre>{`Host
   id, name, location_hint, gateway_id, payout_account, created_at
 
-User (neighbor)
+User (neighbour)
   id, phone_or_email, device_fingerprints[], created_at
 
 Plan
@@ -97,7 +184,7 @@ Plan
 
 Session
   id, user_id, host_id, plan_id
-  code                  -- short human-readable
+  code                  -- short, human-readable
   device_hash           -- bound at purchase / first connect
   status                -- pending | active | expired | revoked
   starts_at, expires_at
@@ -105,95 +192,87 @@ Session
   created_at
 
 GatewayEvent (audit)
-  session_id, event_type, device_hash, ip, timestamp`}
-            </pre>
-          </section>
+  session_id, event_type, device_hash, ip, timestamp`}</pre>
+              </Panel>
+            </Section>
 
-          <section>
-            <h2 className="text-2xl font-bold text-white mb-3">5. Device Binding Flow</h2>
-            <ol className="list-decimal pl-5 space-y-2">
-              <li>
-                User pays → backend creates Session with status{" "}
-                <code className="text-sky-300">pending</code> and a unique code.
-              </li>
-              <li>
-                On first successful validation, the current device fingerprint is
-                written to <code className="text-sky-300">device_hash</code> and
-                status becomes <code className="text-sky-300">active</code>.
-              </li>
-              <li>
-                Subsequent checks require the same device_hash. Mismatch → reject.
-              </li>
-              <li>
-                At <code className="text-sky-300">expires_at</code> a worker sets
-                status to <code className="text-sky-300">expired</code> and removes
-                the device from the allow-list.
-              </li>
-            </ol>
-          </section>
+            <Section id="binding" n={5} title="Device binding flow">
+              <ol className="space-y-4">
+                {[
+                  <>
+                    The neighbour pays. The backend creates a session with
+                    status <Code>pending</Code> and a unique code.
+                  </>,
+                  <>
+                    On the first successful check, the device fingerprint is
+                    written to <Code>device_hash</Code> and the status becomes{" "}
+                    <Code>active</Code>.
+                  </>,
+                  <>Every later check needs the same device_hash. A mismatch is rejected.</>,
+                  <>
+                    At <Code>expires_at</Code> a worker sets the status to{" "}
+                    <Code>expired</Code> and removes the device from the
+                    allow-list.
+                  </>,
+                ].map((item, i) => (
+                  <li key={i} className="flex gap-4">
+                    <span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-ink font-mono text-sm font-semibold text-paper">
+                      {i + 1}
+                    </span>
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ol>
+            </Section>
 
-          <section>
-            <h2 className="text-2xl font-bold text-white mb-3">6. Unit Economics Sketch</h2>
-            <div className="glass rounded-2xl p-6 text-sm">
-              <p className="text-ink-300 mb-3">
-                Example host with 8 regular neighbors:
+            <Section id="economics" n={6} title="Unit economics">
+              <p>An example host with 8 regular neighbours:</p>
+              <dl className="rounded-xl border border-line bg-sheet">
+                {ECONOMICS.map(([k, v]) => (
+                  <div
+                    key={k}
+                    className="flex flex-col gap-1 border-t border-line px-5 py-4 first:border-t-0 sm:flex-row sm:items-baseline sm:justify-between sm:gap-6"
+                  >
+                    <dt>{k}</dt>
+                    <dd className="wide font-extrabold tabular-nums text-ink">{v}</dd>
+                  </div>
+                ))}
+              </dl>
+              <p>
+                The host keeps most of the revenue and needs almost no extra
+                hardware beyond a modest second router. Real numbers will vary
+                with neighbourhood density and pricing power.
               </p>
-              <ul className="space-y-1">
-                <li>Average spend per neighbor / month: ₦8,000 – ₦15,000</li>
-                <li>Gross monthly GMV per host: ₦64k – ₦120k</li>
-                <li>Platform take-rate (target): 12–18%</li>
-                <li>
-                  Host keeps majority of revenue with almost zero extra hardware
-                  cost beyond a modest secondary router.
-                </li>
+            </Section>
+
+            <Section id="roadmap" n={7} title="Roadmap">
+              <ul>
+                {ROADMAP.map((r) => (
+                  <li
+                    key={r.when}
+                    className="grid grid-cols-[4.5rem_1fr] gap-4 border-t-2 border-dashed border-line-strong py-4 first:border-t-0 first:pt-0"
+                  >
+                    <span className="font-bold text-ink">{r.when}</span>
+                    <span>{r.what}</span>
+                  </li>
+                ))}
               </ul>
-              <p className="text-ink-500 mt-4 text-xs">
-                Actual numbers will vary by neighborhood density and pricing power.
-              </p>
-            </div>
-          </section>
+            </Section>
+          </div>
 
-          <section>
-            <h2 className="text-2xl font-bold text-white mb-3">7. Roadmap</h2>
-            <ul className="list-disc pl-5 space-y-2">
-              <li>
-                <strong className="text-ink-200">Now</strong> — Next.js demo +
-                architecture (this package)
-              </li>
-              <li>
-                <strong className="text-ink-200">Next</strong> — Real auth, payments
-                (Paystack/Flutterwave), session API, basic admin for hosts
-              </li>
-              <li>
-                <strong className="text-ink-200">Then</strong> — OpenWRT / UniFi
-                reference gateway image + captive portal
-              </li>
-              <li>
-                <strong className="text-ink-200">Later</strong> — Host dashboard,
-                payouts, multi-SSID, analytics, mobile PWA
-              </li>
-            </ul>
-          </section>
-        </div>
+          <div className="perf-rule mt-16 flex flex-col gap-3 pt-8 sm:flex-row">
+            <Link href="/app" className="btn btn-primary">
+              Open the live demo
+            </Link>
+            <Link href="/" className="btn btn-outline">
+              Back to the website
+            </Link>
+          </div>
 
-        <div className="mt-14 pt-8 border-t border-white/10 flex flex-col sm:flex-row gap-4">
-          <Link
-            href="/app"
-            className="inline-flex justify-center items-center px-6 py-3 rounded-full bg-gradient-to-r from-sky-500 to-indigo-500 text-sm font-semibold text-white"
-          >
-            Open the live demo
-          </Link>
-          <Link
-            href="/"
-            className="inline-flex justify-center items-center px-6 py-3 rounded-full glass text-sm font-medium text-ink-200"
-          >
-            Marketing site
-          </Link>
-        </div>
-
-        <p className="text-center text-xs text-ink-600 mt-16">
-          Beacon · Confidential for investor conversations · 2026
-        </p>
+          <p className="mt-12 text-sm text-ink-soft">
+            Beacon. Confidential, for investor conversations. 2026.
+          </p>
+        </article>
       </div>
     </div>
   );
