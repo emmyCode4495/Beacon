@@ -121,7 +121,7 @@ export default function DocsPage() {
             <Section id="problem" n={1} title="Problem and opportunity">
               <p>
                 Starlink and other unlimited fixed connections deliver excellent
-                bandwidth but are single-household by design. Neighbours
+                bandwidth but are often single-user by design — yet people constantly need to share. Neighbours
                 routinely ask to &ldquo;borrow&rdquo; the network. Giving out
                 the real password creates permanent access, a security risk and
                 no income.

@@ -19,9 +19,9 @@ const plexMono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Beacon: sell the spare hours of your Starlink",
+  title: "Beacon — Share your data. Get paid.",
   description:
-    "Neighbours buy hours of Wi-Fi from your Starlink with a code locked to one device. Access ends on time and your real password stays private.",
+    "Anyone with mobile data or Wi-Fi can host. Friends pay for timed, device-bound access. Your password stays private.",
 };
 
 export const viewport: Viewport = {
